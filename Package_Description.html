@@ -408,9 +408,63 @@ i.e: This following data set does not look like it has any frequencies, but the 
 <p>And in other cases the column names that are needed in the following functions might not be the same as the ones provided in the data. <em>Population</em>, <em>Gene</em>, and <em>frequency</em> <strong>need</strong> to be the names of the columns associated to their proper data. For example, instead of the needed name <em>Population</em>, the data might have, population(non-capitalized),Populations(plural) or populations. If that is the case, then you must change the name to <em>Population</em>, either by the code</p>
 <pre><code>## [1] &quot;names(data)[]&lt;-Population&quot;</code></pre>
 <p>having the column number associated to the name you want to change in [ ] or by changing it manually in the data. The same follows for <em>Gene</em> and <em>frequency</em>.</p>
+<div id="data-manipulation-example" class="section level4">
+<h4>Data manipulation example</h4>
+<p>Not all data will be perfect to work with, here is an example of a dataset that I had to manipulate in order to use the function.</p>
+<pre class="r"><code>head(data, n=6L)</code></pre>
+<pre><code>## # A tibble: 6 x 35
+##   Gene  `A1 F1 I1 R1` `A1 F1 I2 R1` `A2 F1 I1 R1` `A2 F1 I2 R1`
+##   &lt;chr&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1 mhpR             NA            NA            NA            NA
+## 2 rpoB             NA            NA            NA            NA
+## 3 yfiH             NA             1            NA             1
+## 4 leuT             NA             1            NA            NA
+## 5 yneO             NA            NA            NA            NA
+## 6 rsxC             NA            NA            NA            NA
+## # … with 30 more variables: `A3 F1 I1 R1` &lt;dbl&gt;, `A3 F1 I2 R1` &lt;dbl&gt;, `A4
+## #   F1 I1 R1` &lt;dbl&gt;, `A4 F1 I2 R1` &lt;dbl&gt;, `A5 F1 I1 R1` &lt;dbl&gt;, `A5 F1 I2
+## #   R1` &lt;dbl&gt;, `A6 F1 I1 R1` &lt;dbl&gt;, `A6 F1 I2 R1` &lt;dbl&gt;, `A7 F1 I1
+## #   R1` &lt;dbl&gt;, `A7 F1 I2 R1` &lt;dbl&gt;, `A8 F1 I1 R1` &lt;dbl&gt;, `A8 F1 I2
+## #   R1` &lt;dbl&gt;, `A9 F1 I1 R1` &lt;dbl&gt;, `A9 F1 I2 R1` &lt;dbl&gt;, `A10 F1 I1
+## #   R1` &lt;dbl&gt;, `A10 F1 I2 R1` &lt;dbl&gt;, `A11 F1 I1 R1` &lt;dbl&gt;, `A11 F1 I2
+## #   R1` &lt;dbl&gt;, `A12 F1 I1 R1` &lt;dbl&gt;, `A12 F1 I2 R1` &lt;dbl&gt;, `A13 F1 I1
+## #   R1` &lt;dbl&gt;, `A13 F1 I2 R1` &lt;dbl&gt;, `A14 F1 I1 R1` &lt;dbl&gt;, `A14 F1 I2
+## #   R1` &lt;dbl&gt;, `Reference Seq` &lt;chr&gt;, Position &lt;dbl&gt;, `Mutation
+## #   Type` &lt;chr&gt;, `Sequence Change` &lt;chr&gt;, Details &lt;chr&gt;, `Mut ID` &lt;dbl&gt;</code></pre>
+<p>This dataset is looking like the single generation matrix form, but when reading the paper it indicates that <em>A1 F1 I1 R1</em> and <em>A1 F1 I2 R1</em> are from the same population, they are both clones. And so we would want to combine those two columns as population <em>A1</em>, with a 0 when both clones have an <strong>NA</strong> and a 1 when either of the clones have a <strong>1</strong>. Here’s what I did to obtain the prefered dataset.</p>
+<pre><code>## [1] &quot;data&lt;- data %&gt;% mutate(A1 = `A1 F1 I1 R1` + `A1 F1 I2 R1`, A2 = `A2 F1 I1 R1`+ `A2 F1 I2 R1`, A3 = `A3 F1 I1 R1`+ `A3 F1 I2 R1`, A4 = `A4 F1 I1 R1`+ `A4 F1 I2 R1`, A5 = `A5 F1 I1 R1`+ `A5 F1 I2 R1`, A6 = `A6 F1 I1 R1`+ `A6 F1 I2 R1`, A7 = `A7 F1 I1 R1`+ `A7 F1 I2 R1`, A8 = `A8 F1 I1 R1`+ `A8 F1 I2 R1`, A9 = `A9 F1 I1 R1`+ `A9 F1 I2 R1`, A10 = `A10 F1 I1 R1`+ `A10 F1 I2 R1`,A11 = `A1 F1 I1 R1`+ `A11 F1 I2 R1`, A12 = `A12 F1 I1 R1`+ `A12 F1 I2 R1`, A13 = `A13 F1 I1 R1`+ `A13 F1 I2 R1`, A14 = `A14 F1 I1 R1`+ `A14 F1 I2 R1`) %&gt;% replace(is.na(.), 0)&quot;</code></pre>
+<p>I used the <strong>mutate</strong> function to combine both columns, then name them by their population name, A1, A2, and so on. I replaced the <em>NA</em> with 0 with replace(is.na(.), 0)) and now the dataset looks like this:</p>
+<pre class="r"><code>head(data, n=6L)</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##      A1    A2    A3    A4    A5    A6    A7    A8    A9   A10   A11   A12
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     0     0     0     0     0     0     0     0     0     0     0     0
+## 2     0     0     0     0     0     0     0     0     0     0     0     0
+## 3     2     2     0     0     2     0     2     2     2     2     0     2
+## 4     0     0     0     0     0     0     0     0     0     0     0     0
+## 5     0     0     0     0     0     0     0     0     0     0     0     0
+## 6     0     0     0     0     0     0     0     0     0     0     0     0
+## # … with 2 more variables: A13 &lt;dbl&gt;, A14 &lt;dbl&gt;</code></pre>
+<p>Now all that’s left to do is to change the 2’s to 1’s. If we left them as 2’s, the number of parallel genes would be off. To switch them to ones, I did the following:</p>
+<pre><code>## [1] &quot;data.matrix[data.matrix &gt; 0]&lt;-1&quot;</code></pre>
+<p>And the dataset now looks like this:</p>
+<pre class="r"><code>head(data, n=6L)</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##      A1    A2    A3    A4    A5    A6    A7    A8    A9   A10   A11   A12
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     0     0     0     0     0     0     0     0     0     0     0     0
+## 2     0     0     0     0     0     0     0     0     0     0     0     0
+## 3     1     1     0     0     1     0     1     1     1     1     0     1
+## 4     0     0     0     0     0     0     0     0     0     0     0     0
+## 5     0     0     0     0     0     0     0     0     0     0     0     0
+## 6     0     0     0     0     0     0     0     0     0     0     0     0
+## # … with 2 more variables: A13 &lt;dbl&gt;, A14 &lt;dbl&gt;</code></pre>
+<p>The data is now in a way that we can use the function!<br />
+There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.</p>
 </div>
-<div id="step-3-walk-through" class="section level3">
-<h3>Step 3: Walk-Through</h3>
+</div>
+<div id="step-4-walk-through" class="section level3">
+<h3>Step 4: Walk-Through</h3>
 <p>By now you should have made your files, chosen a dataset you want to analysis and saved it as “Author2018” in he csv format, decided which of the following functions works best for that data set and checked to see if the data has the proper format.<br />
 And now you are ready to start analyzing your data!<br />
 I will use the multiple generations function as an example for the walk-through.</p>
@@ -430,8 +484,8 @@ I will use the multiple generations function as an example for the walk-through.
 Your function should be good to go!<br />
 After you ran your code the analysis will be saved into the data-out folder that you already created. It should be called”Author2018_Analysis.csv“. Since this is a multiple generation example, you will also have seperate information for each generation, that will include the populations, genes and frequencies at that time point. It will also be saved in the data-out folder under the name”Author2018_g.csv&quot;, g being either 0, 100, 500, 1000 or 1500 for this example.</p>
 </div>
-<div id="step-4-solving-errors" class="section level3">
-<h3>Step 4: Solving Errors</h3>
+<div id="step-5-solving-errors" class="section level3">
+<h3>Step 5: Solving Errors</h3>
 <p>If you come across an error while running your function:</p>
 <ul>
 <li>Make sure you picked the right function for your data, the single generation functions will not work in the multiple generation function and vice versa. Sometimes it is hard to distinguish between the functions, check the data format below in the each of the sections to help choose which functions is best for your data.<br />

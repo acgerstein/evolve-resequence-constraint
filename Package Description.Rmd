@@ -43,9 +43,46 @@ And in other cases the column names that are needed in the following functions m
 ```{r, echo=FALSE}
 print("names(data)[]<-Population") 
 ```
-having the column number associated to the name you want to change in [ ] or by changing it manually in the data. The same follows for *Gene* and *frequency*.  
+having the column number associated to the name you want to change in [ ] or by changing it manually in the data. The same follows for *Gene*, *frequency* and *selective_pressure*.  
 
-### Step 3: Walk-Through
+#### Data manipulation example  
+Not all data will be perfect to work with, here is an example of a dataset that I had to manipulate in order to use the function.
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("data-in/Wannier2018.csv")
+data<- data %>% filter(Details != "intergenic")
+```
+```{r }
+head(data, n=6L)
+```
+This dataset is looking like the single generation matrix form, but when reading the paper it indicates that *A1 F1 I1 R1* and *A1 F1 I2 R1* are from the same population, they are both clones. And so we would want to combine those two columns as population *A1*, with a 0 when both clones have an **NA** and a 1 when either of the clones have a **1**. Here's what I did to obtain the prefered dataset.  
+```{r, echo=FALSE}
+print("data<- data %>% mutate(A1 = `A1 F1 I1 R1` + `A1 F1 I2 R1`, A2 = `A2 F1 I1 R1`+ `A2 F1 I2 R1`, A3 = `A3 F1 I1 R1`+ `A3 F1 I2 R1`, A4 = `A4 F1 I1 R1`+ `A4 F1 I2 R1`, A5 = `A5 F1 I1 R1`+ `A5 F1 I2 R1`, A6 = `A6 F1 I1 R1`+ `A6 F1 I2 R1`, A7 = `A7 F1 I1 R1`+ `A7 F1 I2 R1`, A8 = `A8 F1 I1 R1`+ `A8 F1 I2 R1`, A9 = `A9 F1 I1 R1`+ `A9 F1 I2 R1`, A10 = `A10 F1 I1 R1`+ `A10 F1 I2 R1`,A11 = `A1 F1 I1 R1`+ `A11 F1 I2 R1`, A12 = `A12 F1 I1 R1`+ `A12 F1 I2 R1`, A13 = `A13 F1 I1 R1`+ `A13 F1 I2 R1`, A14 = `A14 F1 I1 R1`+ `A14 F1 I2 R1`) %>% replace(is.na(.), 0)")  
+```
+I used the **mutate** function to combine both columns, then name them by their population name, A1, A2, and so on. I replaced the *NA* with 0 with replace(is.na(.), 0)) and now the dataset looks like this:  
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("~/Desktop/Co-op/evolve-resequence-constraint/data-out/Wannier2018example_Analysis.csv")
+```
+```{r }
+head(data, n=6L)
+```
+Now all that's left to do is to change the 2's to 1's. If we left them as 2's, the number of parallel genes would be off. To switch them to ones, I did the following:  
+```{r, echo=FALSE}
+print("data.matrix[data.matrix > 0]<-1")
+```
+And the dataset now looks like this:  
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("~/Desktop/Co-op/evolve-resequence-constraint/data-out/Wannier2018example2_Analysis.csv")
+```
+```{r }
+head(data, n=6L)
+```
+The data is now in a way that we can use the function!  
+There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.  
+
+### Step 4: Walk-Through
 By now you should have made your files, chosen a dataset you want to analysis and saved it as "Author2018" in he csv format, decided which of the following functions works best for that data set and checked to see if the data has the proper format.  
 And now you are ready to start analyzing your data!  
 I will use the multiple generations function as an example for the walk-through.  
@@ -60,7 +97,7 @@ And so your function will look like this: multigen_c_hyper("Author2018, "YPD", "
 Your function should be good to go!  
 After you ran your code the analysis will be saved into the data-out folder that you already created. It should be called "Author2018_Analysis.csv". Since this is a multiple generation example, you will also have seperate information for each generation, that will include the populations, genes and frequencies at that time point. It will also be saved in the data-out folder under the name "Author2018_g.csv", g being either 0, 100, 500, 1000 or 1500 for this example.  
 
-### Step 4: Solving Errors
+### Step 5: Solving Errors
 If you come across an error while running your function: 
 
 * Make sure you picked the right function for your data, the single generation functions will not work in the multiple generation function and vice versa. Sometimes it is hard to distinguish between the functions, check the data format below in the each of the sections to help choose which functions is best for your data.      
