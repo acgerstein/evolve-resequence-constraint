@@ -57,12 +57,12 @@ head(data, n=6L)
 ```
 This dataset is looking like the single generation matrix form, but when reading the paper it indicates that *A1 F1 I1 R1* and *A1 F1 I2 R1* are from the same population, they are both clones. And so we would want to combine those two columns as population *A1*, with a 0 when both clones have an **NA** and a 1 when either of the clones have a **1**. Here's what I did to obtain the prefered dataset.  
 ```{r, echo=FALSE}
-print("data<- data %>% mutate(A1 = `A1 F1 I1 R1` + `A1 F1 I2 R1`, A2 = `A2 F1 I1 R1`+ `A2 F1 I2 R1`, A3 = `A3 F1 I1 R1`+ `A3 F1 I2 R1`, A4 = `A4 F1 I1 R1`+ `A4 F1 I2 R1`, A5 = `A5 F1 I1 R1`+ `A5 F1 I2 R1`, A6 = `A6 F1 I1 R1`+ `A6 F1 I2 R1`, A7 = `A7 F1 I1 R1`+ `A7 F1 I2 R1`, A8 = `A8 F1 I1 R1`+ `A8 F1 I2 R1`, A9 = `A9 F1 I1 R1`+ `A9 F1 I2 R1`, A10 = `A10 F1 I1 R1`+ `A10 F1 I2 R1`,A11 = `A1 F1 I1 R1`+ `A11 F1 I2 R1`, A12 = `A12 F1 I1 R1`+ `A12 F1 I2 R1`, A13 = `A13 F1 I1 R1`+ `A13 F1 I2 R1`, A14 = `A14 F1 I1 R1`+ `A14 F1 I2 R1`) %>% replace(is.na(.), 0)")  
+print("data<- data %>% transmute(A1 = `A1 F1 I1 R1` + `A1 F1 I2 R1`, A2 = `A2 F1 I1 R1`+ `A2 F1 I2 R1`, A3 = `A3 F1 I1 R1`+ `A3 F1 I2 R1`, A4 = `A4 F1 I1 R1`+ `A4 F1 I2 R1`, A5 = `A5 F1 I1 R1`+ `A5 F1 I2 R1`, A6 = `A6 F1 I1 R1`+ `A6 F1 I2 R1`, A7 = `A7 F1 I1 R1`+ `A7 F1 I2 R1`, A8 = `A8 F1 I1 R1`+ `A8 F1 I2 R1`, A9 = `A9 F1 I1 R1`+ `A9 F1 I2 R1`, A10 = `A10 F1 I1 R1`+ `A10 F1 I2 R1`,A11 = `A1 F1 I1 R1`+ `A11 F1 I2 R1`, A12 = `A12 F1 I1 R1`+ `A12 F1 I2 R1`, A13 = `A13 F1 I1 R1`+ `A13 F1 I2 R1`, A14 = `A14 F1 I1 R1`+ `A14 F1 I2 R1`) %>% replace(is.na(.), 0)")  
 ```
-I used the **mutate** function to combine both columns, then name them by their population name, A1, A2, and so on. I replaced the *NA* with 0 with replace(is.na(.), 0)) and now the dataset looks like this:  
+I used the **transmute** function to combine both columns, then name them by their population name, A1, A2, and so on as well as delete the old columns. I replaced the *NA* with 0 with replace(is.na(.), 0)) and now the dataset looks like this:  
 ```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
 library(tidyverse)
-data <- read_csv("~/Desktop/Co-op/evolve-resequence-constraint/data-out/Wannier2018example_Analysis.csv")
+data <- read_csv("~/Desktop/Co-op/other/evolve-resequence-constraint/data-out/Wannier2018example_Analysis.csv")
 ```
 ```{r }
 head(data, n=6L)
@@ -74,13 +74,48 @@ print("data.matrix[data.matrix > 0]<-1")
 And the dataset now looks like this:  
 ```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
 library(tidyverse)
-data <- read_csv("~/Desktop/Co-op/evolve-resequence-constraint/data-out/Wannier2018example2_Analysis.csv")
+data <- read_csv("~/Desktop/Co-op/other/evolve-resequence-constraint/data-out/Wannier2018example2_Analysis.csv")
 ```
 ```{r }
 head(data, n=6L)
 ```
 The data is now in a way that we can use the function!  
-There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.  
+There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.   
+
+Another example of setting up the data for analysis:  
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("~/Desktop/Co-op/other/evolve-resequence-constraint/data-out/Tenaillon2016_example_Analysi.csv")
+```
+```{r }
+head(data, n=6L)
+```
+We can see that the column names give us alot of information, the population(i.e A1), the generation(i.e 500), clones(i.e I1 and I2) and the number of replicates(i,e R1). To get the data to look like the form in the muplie generation function, we need a **Population** column, to combine the clones, and to change the column names to what we want the generations to be.  
+First I made a new column and called it *Population* and added the proper population to the data. In this case we have 6 populations, and so we will have A1 to A6.  
+i.e  
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("~/Desktop/Co-op/other/evolve-resequence-constraint/data-in/Tenaillon2016.csv")
+```
+```{r }
+head(data, n=6L)
+```
+```{r }
+tail(data, n=6L)
+```
+And now I have to combine both clones into one column and name that column `500`, for the 500th generation and change the NA's to 0.
+```{r, echo=FALSE}
+print("data <- data %>% 
+  transmute(`500` = `500 I1 R1`+`500 I2 R1`, `1000` = `1000 I1 R1`+`1000 I2 R1`, `1500` =`1500 I1 R1`+`1500 I2 R1`, `2000` = `2000 I1 R1`+`2000 I2 R1`, `5000` = `5000 I1 R1`+`5000 I2 R1`, `10000` = `10000 I1 R1`+`10000 I2 R1`, `15000` = `15000 I1 R1`+`15000 I2 R1`, `20000` = `20000 I1 R1`+`20000 I2 R1`, `30000` = `30000 I1 R1`+`30000 I2 R1`, `40000` = `40000 I1 R1`+`40000 I2 R1`, `50000` = `50000 I1 R1`+`50000 I2 R1`) %>% replace(is.na(.), 0) ")
+```
+In this case it doesn't matter if the gene count in each column if off due to adding the columns together because we have a code in the function that changes any value greater then 0 to a 1. Ans so now the dataset will look like this:
+```{r, echo = FALSE, results = 'hide', warning=FALSE , message=FALSE}
+library(tidyverse)
+data <- read_csv("data-out/Tenaillon2016_example_Analysis.csv")
+```
+```{r }
+head(data, n=6L)
+```
 
 ### Step 4: Walk-Through
 By now you should have made your files, chosen a dataset you want to analysis and saved it as "Author2018" in he csv format, decided which of the following functions works best for that data set and checked to see if the data has the proper format.  
