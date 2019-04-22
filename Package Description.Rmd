@@ -74,6 +74,16 @@ knitr::include_graphics("figures/Tenaillon.1.png")
 ```{r, echo=FALSE, out.width = '75%', fig.pos = "H", fig.align="center"}
 knitr::include_graphics("figures/Tenaillon.2.png")
 ```
+And now I have to combine both clones into one column and name that column `500`, for the 500th generation and change the NA's to 0.  
+```{r, echo=FALSE}
+print("data <- data %>% 
+  transmute(Gene = data$Gene, Population = data$Population, Details = data$Details, `500` = `500 I1 R1`+`500 I2 R1`, `1000` = `1000 I1 R1`+`1000 I2 R1`, `1500` =`1500 I1 R1`+`1500 I2 R1`, `2000` = `2000 I1 R1`+`2000 I2 R1`, `5000` = `5000 I1 R1`+`5000 I2 R1`, `10000` = `10000 I1 R1`+`10000 I2 R1`, `15000` = `15000 I1 R1`+`15000 I2 R1`, `20000` = `20000 I1 R1`+`20000 I2 R1`, `30000` = `30000 I1 R1`+`30000 I2 R1`, `40000` = `40000 I1 R1`+`40000 I2 R1`, `50000` = `50000 I1 R1`+`50000 I2 R1`) %>% replace(is.na(.), 0)")
+```
+In this case it doesn't matter if the gene count in each column if off due to adding the columns together because we have a code in the function that changes any value greater then 0 to a 1. Ans so now the dataset will look like this:  
+```{r, echo=FALSE, out.width = '75%', fig.pos = "H", fig.align="center"}
+knitr::include_graphics("figures/Tenaillon.3.png")
+```
+
 
 
 ### Step 4: Walk-Through
