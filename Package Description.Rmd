@@ -63,7 +63,18 @@ And the dataset now looks like this:
 knitr::include_graphics("figures/Wannier.3.png")
 ```
 The data is now in a way that we can use the function!  
-There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.   
+There are other ways to code the data to look the way we want. This is a basic way to do it, but other functions will work aswell. You might have to do this for datasets of the other types of function, but it is all the same idea, refer to the types of functions below to see how the data should look like.     
+Another example of setting up the data for analysis:  
+We can see that the column names give us alot of information, the population(i.e A1), the generation(i.e 500), clones(i.e I1 and I2) and the number of replicates(i,e R1). To get the data to look like the form in the muplie generation function, we need a *Population* column, to combine the clones, and to change the column names to what we want the generations to be.    
+First I made a new column and called it *Population* and added the proper population to the data. In this case we have 6 populations, and so we will have A1 to A6.    
+i.e    
+```{r, echo=FALSE, out.width = '75%', fig.pos = "H", fig.align="center"}
+knitr::include_graphics("figures/Tenaillon.1.png")
+```
+```{r, echo=FALSE, out.width = '75%', fig.pos = "H", fig.align="center"}
+knitr::include_graphics("figures/Tenaillon.2.png")
+```
+
 
 ### Step 4: Walk-Through
 By now you should have made your files, chosen a dataset you want to analysis and saved it as "Author2018" in he csv format, decided which of the following functions works best for that data set and checked to see if the data has the proper format.  
