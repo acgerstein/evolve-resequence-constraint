@@ -35,12 +35,12 @@ knitr::include_graphics("figures/Creamer.png")
 ```
   
     
-And in other cases the column names that are needed in the following functions might not be the same as the ones provided in the data. *Population*, *Gene*, and *Frequency* **need** to be the names of the columns associated to their proper data. For example, instead of the needed name *Population*, the data might have, population (non-capitalized),Populations (plural) or populations. If that is the case, then you must change the name to *Population*, either by the code  
+And in other cases the column names that are needed in the following functions might not be the same as the ones provided in the data. For these two examples on top, you need to have a *Gene* column. For example, instead of the needed name *Gene*, the data might have, gene (non-capitalized), Genes (plural) or genes (both). If that is the case, then you must change the name to *Gene*, either by the code  
 
 ```{r, echo=TRUE, eval = FALSE}
 names(data)[1] <- Population
 ```
-having the column number associated to the name you want to change (i.e., instead of [1]) or by changing it manually in the data. The same follows for *Gene*, *Frequency* and *Selective_pressure*.  
+having the column number associated to the name you want to change (i.e., instead of [1]) or by changing it manually in the data. The same follows for *Population*, *Frequency* and *Selective_pressure* in the other functions.  
 
 #### Data manipulation example  
 Not all data will be perfect to work with (in fact almost no data is perfect to work with), here is an example of a dataset that I had to manipulate in order to use the function.
@@ -113,7 +113,7 @@ I will use the multiple generations function as an example for the walk-through.
   
 And so your function will look like this:  
 ```{r, eval=FALSE}
-multigen_c_hyper(paper = "Author2018", environment = "YPD", speices = "Sac", generations = c("0", "100", "500", "1000", "1500"))  
+multigen_c_hyper(paper = "Author2018", environment = "YPD", species = "Sac", generations = c("0", "100", "500", "1000", "1500"))  
 ```
 
 Your function should be good to go!  
@@ -125,14 +125,14 @@ If you come across an error while running your function:
 
 * Make sure you picked the right function for your data, the single generation functions will not work in the multiple generation function and vice versa. Sometimes it is hard to distinguish between the functions, check the data format below in the each of the sections to help choose which functions is best for your data.      
 * Double check that all the parameters are set properly and that they match the information in your data.      
-* Make sure the column names are correct, it is easy to forget to change a column name gene to the needed one *Gene*. The code is ran in a way that it will recognize *Gene* and not gene. Same goes for *Population* and *Frequency*.    
+* Make sure the column names are correct, it is easy to forget to change a column name gene to the needed one *Gene*. The code is ran in a way that it will recognize *Gene* and not gene. Same goes for *Population*, *Frequency* and *Selective_pressure*.    
 * Lastly, if there is an error when it tries to calculate the c-hyper, that could be due to lack of parallelism, populations or genes in that generation/selective pressure. If you are unsure, take a look at the original data to see if it matches the conclusion of no parallelism.      
   
 ## Calculations for a Multiple Generation Function  
 This function allows you to calculate the pairwise C-score using the hypergeometric approach, a p-value for 'all lineages' contrast using chi-square, and the	estimates of the effective proportion of adaptive loci for a data set with multiple generations.
 
 ### Data  
-The data must have more than one generation, a column called *Populations*, a column called *Gene*, and *Frequency* associated with the Gene, Population and generation. The data can have other columns as well, but as long as we have the main ones named above, then the function will work.      
+The data must have more than one generation, a column called *Populations*, a column called *Gene*, and frequencies associated with the Gene, Population and generation. The data can have other columns as well, but as long as we have the main ones named above, then the function will work.      
 This data should be saved in the data-in folder that you created beforehand.
 
 i.e.:
@@ -141,7 +141,7 @@ knitr::include_graphics("figures/Lang_1.png")
 ```
 
 Here we can see that the generations are 0, 140, 335, 415, 505, 585 and so on. All the numbers below the generations are the frequencies associated with the *Gene* in the *Population*.   
-e.g.: *Gene* UBX5 has a *frequency* of 0.94 at *generation* 335 in the *Population* BYB1-B01.  
+e.g.: *Gene* UBX5 has a *Frequency* of 0.94 at *generation* 335 in the *Population* BYB1-B01.  
 
 Now we have to fill in the parameters in the function: 
 ```{r, eval =FALSE}
@@ -164,7 +164,7 @@ The analysis will be automatically saved into the data-out folder that you creat
 This function allows you to calculate the pairwise C-score using the hypergeometric approach, a p-value for 'all lineages' contrast using chi-square, and the estimates of the effective proportion of adaptive loci for a data set with  multiplte selective pressures.  
 
 ### Data  
-The data must have more than one selective pressure, a column called *Populations*, a column 	called *Gene*, and a column called *frequency*.    
+The data must have more than one selective pressure, a column called *Populations*, a column 	called *Gene*, a column called *Frequency* and a column called *Selective_pressure*.    
 This data should be saved in the data-in folder that you created beforehand.  
 
 i.e:
@@ -172,9 +172,9 @@ i.e:
 knitr::include_graphics("figures/Jerison_1.png")
 ```
 Here we can see that the selective pressures are OT(Optimal Temperature) and HT(High Temperature).  
-ex: *Gene* AFI1 has a *frequency* of 0.6666667 in the *Population* LK5-F08 with the *selective pressure* HT.  
+ex: *Gene* AFI1 has a *Frequency* of 0.6666667 in the *Population* LK5-F08 with the *Selective_pressure* HT.  
 
-Now we have to fill in the parameters in the function: *multipressure_c_hyper(paper, environment, species, selective_pressure)*  
+Now we have to fill in the parameters in the function: *multipressure_c_hyper(paper, environment, species, Selective_pressure)*  
 If we use the data above as an example, then the function would look like this:  
 *multipressure_c_hyper("Author2017", "YPD", "Ecoli_K12", c("OT", "HT"))*   
 
@@ -191,7 +191,7 @@ The analysis will be automatically saved into the data-out folder that you creat
 This function allows you to calculate the pairwise C-score using the hypergeometric approach, a p-value for 'all lineages' contrast using chi-square, and the estimates of the effective proportion of adaptive loci for a data set with a single generation in a matrix form.   
 
 ### Data  
-The data must be in a form of a matrix, with the *Population* occupying either the names of the columns or the rows, usually column, and the *Gene* occupying the names of the columns or rows, which ever is not occupied by the Population. Each row and column will be filled with *frequencies* associated to a Gene in the Population.    
+The data must be in a form of a matrix, with the *Population* occupying either the names of the columns or the rows, usually column, and the *Gene* occupying the names of the columns or rows, which ever is not occupied by the Population. Each row and column will be filled with frequencies associated to a Gene in the Population.    
 This data should be saved in the data-in folder that you created beforehand.  
 
 i.e:
@@ -218,15 +218,15 @@ The analysis will be automatically saved into the data-out folder that you creat
 This function allows you to calculate the pairwise C-score using the hypergeometric approach, a p-value for 'all lineages' contrast using chi-square, and the estimates of the effective proportion of adaptive loci for a data set with a single generation.
 
 ### Data  
-The data must have a column called *Population*, a column 	called *Gene*, and a column *frequency*. The data can have other columns as well, but as long as we have the main ones named above, the function will work.      
+The data must have a column called *Population*, a column 	called *Gene*, and a column *Frequency*. The data can have other columns as well, but as long as we have the main ones named above, the function will work.      
 This data should be saved in the data-in folder that you created beforehand.
 
 i.e:
 ```{r, echo=FALSE, out.width = '75%', fig.pos = "H", fig.align="center"}
 knitr::include_graphics("figures/McCloskey_1.png")
 ```
-Here we can see that we have a *Population* column, a *Gene* column and a *frequency* column.  
-ex: The *Gene* araA in the *Population* Evo04ptsHIcrrEvo03EP has a *frequency* of 0.738 at this time point.  
+Here we can see that we have a *Population* column, a *Gene* column and a *Frequency* column.  
+ex: The *Gene* araA in the *Population* Evo04ptsHIcrrEvo03EP has a *Frequency* of 0.738 at this time point.  
 
 Now we have to fill in the parameters in the function: *singlegen_c_hyper(paper, environment, species)*  
 If we use the data above as an example, then the function would look like this:  
